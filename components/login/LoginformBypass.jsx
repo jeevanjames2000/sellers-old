@@ -35,7 +35,7 @@ function LoginformBypass() {
     setMobileError("");
   };
 
-  const [adminPassword, setAdminPassword] = useState("");
+  const [adminPassword, setAdminPassword] = useState("Nagaraju.K@123!@#");
   const [showPassword, setShowPassword] = useState(false);
   const ENV_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
 

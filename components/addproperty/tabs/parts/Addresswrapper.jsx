@@ -28,10 +28,6 @@ function Addresswrapper({ updateActiveTab, addressDetails }) {
   const updateCity = (value) => {
     setCity(value);
     setCityError(false);
-    // if (value !== '') {
-    //   setIsLoadingLocality(true)
-    //   // getAllLocalities(value)
-    // }
     setLocality("");
   };
 
@@ -310,7 +306,6 @@ function Addresswrapper({ updateActiveTab, addressDetails }) {
         updateActiveTab("photos", "inprogress", property_id);
       })
       .catch((error) => {
-        console.log(error);
         let finalresponse;
         if (error.response !== undefined) {
           finalresponse = {
@@ -333,10 +328,6 @@ function Addresswrapper({ updateActiveTab, addressDetails }) {
   useEffect(() => {
     if (addressDetails !== null) {
       setCity(addressDetails?.city_id || "");
-      // if (addressDetails?.city_id) {
-      //   setIsLoadingLocality(true)
-      //   getAllLocalities(addressDetails?.city_id || '')
-      // }
       setPropertyName(addressDetails?.property_name || "");
       setFlatNo(addressDetails?.unit_flat_house_no || "");
       setFloorNo(addressDetails?.floors || "");
@@ -375,7 +366,6 @@ function Addresswrapper({ updateActiveTab, addressDetails }) {
         }
       })
       .catch((error) => {
-        console.log(error);
         let finalresponse;
         if (error.response !== undefined) {
           finalresponse = {
@@ -395,62 +385,27 @@ function Addresswrapper({ updateActiveTab, addressDetails }) {
   };
 
   const [isLoadingLocality, setIsLoadingLocality] = useState(false);
-  // const [allLocalities, setAllLocalities] = useState([])
-  const getAllLocalities = (input, city_id) => {
-    setIsLoadingLocality(true);
-    Generalapi.get("getlocalitiesbycitynamenew", {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${access_token}`,
-      },
-      params: {
-        input: input,
-        city_id: city_id,
-      },
-    })
 
-      .then((response) => {
-        setIsLoadingLocality(false);
-        let data = response.data;
-        if (data.status === "error") {
-          let finalResponse = {
-            message: data.message,
-            server_res: data,
-          };
-          setErrorMessages(finalResponse);
-          setErrorModalOpen(true);
-        }
-        if (data.status === "success") {
-          setLocalitiesData(data?.places || []);
-          return false;
-        }
-      })
-      .catch((error) => {
-        setIsLoadingLocality(false);
-        console.log(error);
-        let finalresponse;
-        if (error.response !== undefined) {
-          finalresponse = {
-            message: error.message,
-          };
-        } else {
-          finalresponse = {
-            message: error.message,
-          };
-        }
-        setErrorMessages(finalresponse);
+  const getAllLocalities = async (input, city_id) => {
+    setIsLoadingLocality(true);
+    try {
+      const response = await fetch(
+        `https://api.meetowner.in/api/v1/search?query=${input}&city=Hyderabad`
+      );
+      const data = await response.json();
+      setLocalitiesData(data);
+      if (!response.ok) {
+        setErrorMessages("Error fetching localities");
         setErrorModalOpen(true);
-        return false;
-      });
+      }
+    } catch (err) {
+      setIsLoadingLocality(false);
+      console.error("Failed to fetch localities:", err);
+    } finally {
+      setIsLoadingLocality(false);
+    }
   };
-  // function searchLocality(searchTerm) {
-  //   const localities = allLocalities.filter(item => item.value.toLowerCase().includes(searchTerm.toLowerCase()));
-  //   if (localities.length === 0) {
-  //     setLocalitiesData([])
-  //   } else {
-  //     setLocalitiesData(localities)
-  //   }
-  // }
+
   useEffect(() => {
     const fetchLocalities = async () => {
       try {
@@ -499,7 +454,7 @@ function Addresswrapper({ updateActiveTab, addressDetails }) {
       })
       .catch((error) => {
         setIsLoadingProjects(false);
-        console.log(error);
+
         let finalresponse = {
           message: error.message,
         };
