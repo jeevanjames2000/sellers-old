@@ -12,7 +12,7 @@
 //             const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json`, {
 //                 params: {
 //                     address: propertiesData?.google_address,
-//                     key: 'AIzaSyBmei9lRUUfJI-kLIPNBoc2SxEkwhKHyvU',
+//                     key: '',
 //                 },
 //             });
 
