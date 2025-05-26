@@ -44,7 +44,7 @@
 //     return (
 //         <div className="p-4 bg-white">
 //             {mapCenter ? (
-//                 <LoadScript googleMapsApiKey="AIzaSyBmei9lRUUfJI-kLIPNBoc2SxEkwhKHyvU">
+//                 <LoadScript googleMapsApiKey="">
 //                     <GoogleMap
 //                         mapContainerClassName="w-full h-64 rounded-md"
 //                         center={mapCenter}
