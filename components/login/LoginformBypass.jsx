@@ -5,40 +5,31 @@ import LoadingOverlay from "../shared/LoadingOverlay";
 import Authapi from "../api/Authapi";
 import { useRouter } from "next/navigation";
 import { useUserDetails } from "../zustand/useUserDetails";
-import { Textinput } from "@nayeshdaggula/tailify";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
-
+import { IconUserFilled, IconLock } from "@tabler/icons-react";
 function LoginformBypass() {
   const router = useRouter();
   const updateAuthDetails = useUserDetails((state) => state.updateAuthDetails);
   const [isLoadingEffect, setIsLoadingEffect] = useState(false);
   const [errorMessages, setErrorMessages] = useState("");
-
   const userInfo = useUserDetails((state) => state.userInfo);
   const isLogged = useUserDetails((state) => state.isLogged);
-
   const [mobile, setMobile] = useState("");
   const [mobileError, setMobileError] = useState("");
   const updateMobile = (e) => {
     let value = e.target.value;
-    //allow only numbers
     if (isNaN(value)) {
       return false;
     }
-
-    //allow only 10 digits
     if (value.length > 10) {
       return false;
     }
-
     setMobile(value);
     setMobileError("");
   };
-
-  const [adminPassword, setAdminPassword] = useState("Nagaraju.K@123!@#");
+  const [adminPassword, setAdminPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const ENV_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
-
   const handleLoginform = (e) => {
     setIsLoadingEffect(true);
     e.preventDefault();
@@ -58,7 +49,6 @@ function LoginformBypass() {
       setIsLoadingEffect(false);
       return false;
     }
-
     Authapi.post("/login", {
       mobile: mobile,
     })
@@ -88,7 +78,6 @@ function LoginformBypass() {
         }
       })
       .catch((error) => {
-        console.log(error);
         let finalresponse;
         if (error.response !== undefined) {
           finalresponse = {
@@ -106,7 +95,6 @@ function LoginformBypass() {
         return false;
       });
   };
-
   useEffect(() => {
     setIsLoadingEffect(true);
     if (isLogged) {
@@ -117,93 +105,94 @@ function LoginformBypass() {
       setIsLoadingEffect(false);
     }
   }, [isLogged]);
-
   return (
-    <>
-      <div className="flex flex-col w-full xl:w-fit h-fit gap-4 xl:gap-6 2xl:gap-6 4xl:gap-8 px-4 md:px-0">
+    <div className="flex flex-col items-center justify-center px-8 py-8 bg-white shadow-md rounded-lg  ">
+      <div className="flex flex-col w-full max-w-full sm:max-w-md h-fit gap-4 xl:gap-6 2xl:gap-6 4xl:gap-8">
         <div className="relative flex flex-col">
-          <form onSubmit={handleLoginform}>
-            <div className="rounded-md flex flex-col bg-white h-fit py-4 md:py-4 lg:py-4 xl:py-4  4xl:py-8 px-[3%] gap-2  md:gap-2 lg:gap-4">
-              <p className="text-[12px] md:text-[12px] xl:text-[16px] lg:text-[16px] 2xl:text-[18px] 3xl:text-[26px] 4xl:text-[28px] font-semibold">
-                Mobile Number
-              </p>
-              <div className="flex flex-row items-center">
-                <div className="w-[15%] xxxs:w-[20%] sm:w-[10%] md:w-[15%] lg:w-[15%] xl:w-[15%]">
-                  <Textinput
-                    value="+91"
-                    placeholder="+91"
-                    inputClassName="text-[12px] md:text-[12px] xl:text-[16px] lg:text-[16px] 2xl:text-[16px] 3xl:text-[26px] 4xl:text-[28px] border-0 border-b border-[#D9D9D9] rounded-none focus:outline-none focus:ring-0 focus:border-b-[#D9D9D9]"
-                    inputProps={{ readOnly: true }}
-                  />
-                </div>
-                <div className="w-[85%] xxxs:w-[80%] sm:w-[90%] md:w-[85%] lg:w-[85%] xl:w-[85%]">
-                  <Textinput
-                    type="number"
-                    placeholder="Enter Mobile Number"
-                    inputClassName="text-[12px] md:text-[12px] xl:text-[16px] lg:text-[16px] 2xl:text-[16px] 3xl:text-[26px] 4xl:text-[28px] 5xl:text-[24px] border-0 border-b border-[#D9D9D9] rounded-none focus:outline-none focus:ring-0 focus:border-b-[#D9D9D9]"
-                    value={mobile}
-                    onChange={updateMobile}
-                    error={mobileError}
-                  />
-                </div>
+          <p className="text-[#1D3A76] font-bold text-[18px]">Admin Login</p>
+          <form
+            onSubmit={handleLoginform}
+            className="flex flex-col w-full max-w-md py-4 md:py-4 lg:py-4 xl:py-4 4xl:py-8 px-[3%] gap-2 md:gap-2 lg:gap-4"
+          >
+            <div className="flex items-center w-full border border-gray-300 rounded-lg">
+              <div className="bg-gray-100 rounded-[5px] p-2 inline-flex items-start justify-start mr-2">
+                <IconUserFilled size={40} className="text-gray-500" />
               </div>
-              <div className="w-full relative">
-                <Textinput
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter admin password"
-                  inputClassName="w-full pr-10 text-[12px] md:text-[12px] xl:text-[16px] lg:text-[16px] 2xl:text-[16px] 3xl:text-[26px] 4xl:text-[28px] 5xl:text-[24px] border-0 border-b border-[#D9D9D9] rounded-none focus:outline-none focus:ring-0 focus:border-b-[#D9D9D9]"
-                  value={adminPassword}
-                  onChange={(e) => setAdminPassword(e.target.value)}
-                  error={mobileError}
-                />
+              <input
+                type="number"
+                placeholder="Enter Mobile Number"
+                className="w-full py-4 text-gray-700 text-[12px] md:text-[12px] xl:text-[16px] lg:text-[16px] 2xl:text-[16px] 3xl:text-[26px] 4xl:text-[28px] bg-transparent placeholder-gray-500 font-[600] border-none focus:outline-none"
+                value={mobile}
+                onChange={updateMobile}
+              />
+            </div>
 
-                <div
-                  className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <IconEye size={20} />
-                  ) : (
-                    <IconEyeOff size={20} />
-                  )}
-                </div>
+            <div className="flex items-center bg-white w-full shadow-sm relative border border-gray-300 rounded-lg">
+              <div className="bg-gray-100 rounded-[5px] p-2 inline-flex items-start justify-start mr-2">
+                <IconLock size={40} className="text-gray-500" />
               </div>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter admin password"
+                className="w-full py-4 text-gray-700 text-[12px] md:text-[12px] xl:text-[16px] lg:text-[16px] 2xl:text-[16px] 3xl:text-[26px] 4xl:text-[28px] bg-white placeholder-gray-500 font-[600] border-none focus:outline-none"
+                value={adminPassword}
+                onChange={(e) => setAdminPassword(e.target.value)}
+              />
+              <div
+                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <IconEye size={20} />
+                ) : (
+                  <IconEyeOff size={20} />
+                )}
+              </div>
+            </div>
 
+            {errorMessages.message && (
+              <div className="text-red-500 text-[12px] md:text-[12px] xl:text-[14px] lg:text-[14px] 2xl:text-[14px] 3xl:text-[20px] 4xl:text-[22px] mt-2">
+                {errorMessages.message}
+              </div>
+            )}
+
+            <div className="flex justify-end">
               <button
-                onClick={handleLoginform}
-                className="text-[12px] md:text-[12px] xl:text-[16px] lg:text-[16px] 2xl:text-[16px] 3xl:text-[26px] 4xl:text-[28px] rounded-md px-4 py-2  bg-[#ffd119] w-full"
+                type="submit"
+                className="text-[12px] md:text-[12px] xl:text-[16px] lg:text-[16px] 2xl:text-[16px] 3xl:text-[26px] 4xl:text-[28px] font-[600] rounded-[30px] px-6 py-2 bg-[#ffd119] w-[30%] max-w-md"
               >
                 Login
               </button>
             </div>
           </form>
           <LoadingOverlay isLoading={isLoadingEffect} />
-        </div>
-        <div className="flex flex-row items-center justify-center bg-[#1D3A76] rounded-full px-4 py-2 space-x-2">
-          <p className="text-white text-[12px] md:text-[12px] xl:text-[16px] lg:text-[16px] 2xl:text-[16px] 3xl:text-[26px] 4xl:text-[28px]">
-            Don't have an Account?
-          </p>
-
-          <Link
-            href="/signup"
-            className="text-[#FBAF01] hover:underline text-[12px] md:text-[12px] xl:text-[16px] lg:text-[16px] 2xl:text-[16px] 3xl:text-[26px] 4xl:text-[28px]"
-          >
-            Signup
-          </Link>
-
-          <span className="text-white text-[16px] 3xl:text-[26px] 4xl:text-[28px]">
-            /
-          </span>
-
-          <Link
-            href="/"
-            className="text-[#FBAF01] hover:underline text-[12px] md:text-[12px] xl:text-[16px] lg:text-[16px] 2xl:text-[16px] 3xl:text-[26px] 4xl:text-[28px]"
-          >
-            Login
-          </Link>
+          <div className="flex justify-center ">
+            <div className="flex items-center space-x-2">
+              <p className="text-white-700 text-[12px] md:text-[12px] xl:text-[16px] lg:text-[16px] 2xl:text-[16px] 3xl:text-[26px] 4xl:text-[28px] font-[600]">
+                Don't have an Account?
+              </p>
+              <div className="bg-[#ffd119] rounded-[30px] px-4 py-2 flex items-center space-x-2">
+                <Link
+                  href="/signup"
+                  className="text-black hover:underline text-[12px] md:text-[12px] xl:text-[16px] lg:text-[16px] 2xl:text-[16px] 3xl:text-[26px] 4xl:text-[28px] font-[600]"
+                >
+                  Signup
+                </Link>
+                <span className="text-black text-[12px] md:text-[12px] xl:text-[16px] lg:text-[16px] 2xl:text-[16px] 3xl:text-[26px] 4xl:text-[28px] font-[600]">
+                  /
+                </span>
+                <Link
+                  href="/login"
+                  className="text-black hover:underline text-[12px] md:text-[12px] xl:text-[16px] lg:text-[16px] 2xl:text-[16px] 3xl:text-[26px] 4xl:text-[28px] font-[600]"
+                >
+                  Login
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 export default LoginformBypass;

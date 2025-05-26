@@ -2112,6 +2112,16 @@ function Addpropertydetails({
         });
         let property_id = data?.property?.unique_property_id;
         updateActiveTab("address", "inprogress", property_id);
+ fetch("https://api.meetowner.in/user/v1/notify-all", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: "New Property Alert!",
+            message: `A new property listing has been uploaded. Check it out now!`,
+          }),
+        })
       })
       .catch((error) => {
         console.log(error);

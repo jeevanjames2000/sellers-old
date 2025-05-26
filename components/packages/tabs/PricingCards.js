@@ -6,6 +6,7 @@ import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
 import { FaCheck, FaRupeeSign, FaTimes } from "react-icons/fa";
 import { toast } from "react-toastify";
+import config from "@/config";
 const loadRazorpayScript = () => {
   return new Promise((resolve) => {
     const script = document.createElement("script");
@@ -15,7 +16,7 @@ const loadRazorpayScript = () => {
     document.body.appendChild(script);
   });
 };
-const handlePayment = async (plan, userInfo, fetchPlans) => {
+const handlePayment = async (plan, userInfo, fetchPlans, cityName) => {
   if (!userInfo?.user_id) {
     toast.error("User ID is required. Please log in.");
     return;
@@ -27,7 +28,7 @@ const handlePayment = async (plan, userInfo, fetchPlans) => {
     );
     return;
   }
-  const apiURL = "https://api.meetowner.in";
+  const apiURL = config.api_url;
   try {
     const checkResponse = await fetch(`${apiURL}/payments/checkSubscription`, {
       method: "POST",
@@ -79,6 +80,8 @@ const handlePayment = async (plan, userInfo, fetchPlans) => {
       handler: async (response) => {
         const payload = {
           user_id: userInfo?.user_id,
+          user_type: userInfo?.user_type,
+          city: cityName || userInfo?.city,
           name: userInfo?.name,
           mobile: userInfo?.mobile || "N/A",
           email: userInfo?.email || "N/A",
@@ -122,7 +125,9 @@ const handlePayment = async (plan, userInfo, fetchPlans) => {
         ondismiss: async () => {
           const payload = {
             user_id: userInfo?.user_id,
+            user_type: userInfo?.user_type,
             name: userInfo?.name,
+            city: cityName || userInfo?.city,
             mobile: userInfo?.mobile || "N/A",
             email: userInfo?.email || "N/A",
             subscription_package: plan.name,
@@ -156,6 +161,7 @@ const handlePayment = async (plan, userInfo, fetchPlans) => {
         name: userInfo?.name,
         mobile: userInfo?.mobile || "N/A",
         email: userInfo?.email || "N/A",
+        city: cityName || userInfo?.city,
         subscription_package: plan.name,
         payment_amount: plan.price,
         payment_reference: response.error.metadata.payment_id || null,
@@ -196,7 +202,6 @@ const PricingCard = ({
   fetchPlans,
   paymentStatus,
 }) => {
-  console.log(price);
   return (
     <div
       className={`relative border rounded-lg shadow-sm p-6 w-55 text-left flex flex-col ${
@@ -324,6 +329,7 @@ const PricingCards = ({
   userInfo,
   subscription,
   fetchPlans,
+  cityName,
 }) => {
   if (isLoadingEffect) return <p>Loading plans...</p>;
   const currentPlan = subscription?.user?.subscription_package?.toLowerCase();
@@ -360,9 +366,10 @@ const PricingCards = ({
           const planKey = packageEnumMap[plan.name];
           const isCurrentPlan =
             currentPlan === planKey &&
-            (subscriptionStatus === "active" ||
-              paymentStatus === "processing" ||
-              paymentStatus === "success");
+            (paymentStatus === "processing" || paymentStatus === "success") &&
+            (subscriptionStatus === "processing" ||
+              subscriptionStatus === "active") &&
+            subscription?.payment?.city === cityName;
           return (
             <SwiperSlide key={plan.id}>
               <PricingCard
@@ -370,9 +377,11 @@ const PricingCards = ({
                 duration={`${plan.duration_days} Days`}
                 price={plan.price === "0.00" ? "Free" : `${plan.price}`}
                 features={transformRulesToFeatures(plan.rules)}
-                isPopular={plan.name.toLowerCase().includes("prime")}
+                isPopular={plan.name === "Prime"}
                 isCurrentPlan={isCurrentPlan}
-                onSubscribe={() => handlePayment(plan, userInfo, fetchPlans)}
+                onSubscribe={() =>
+                  handlePayment(plan, userInfo, fetchPlans, cityName)
+                }
                 fetchPlans={fetchPlans}
                 paymentStatus={paymentStatus}
               />

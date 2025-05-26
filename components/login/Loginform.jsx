@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Errorpanel from "../shared/Errorpanel";
 import LoadingOverlay from "../shared/LoadingOverlay";
@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 import { useUserDetails } from "../zustand/useUserDetails";
 import { Modal, Textinput } from "@nayeshdaggula/tailify";
 import OtpModal from "../signup/OtpModal";
-import axios from "axios";
 
 function Loginform() {
   const router = useRouter();
@@ -146,8 +145,7 @@ function Loginform() {
           return false;
         } else {
           openOtpModal();
-          console.log(data?.otp);
-          setGenratedOtp(`${data?.otp}`);
+                  setGenratedOtp(`${data?.otp}`);
           setTimeout(() => {
             setIsLoadingEffect(false);
           }, 3000);
@@ -202,14 +200,14 @@ function Loginform() {
       router.push("/dashboard");
       setIsLoadingEffect(false);
     } else {
-      router.push("/");
+      router.push("/login");
       setIsLoadingEffect(false);
     }
   }, [isLogged]);
 
   return (
     <>
-      <div className="flex flex-col w-full xl:w-fit h-fit gap-4 xl:gap-6 2xl:gap-6 4xl:gap-8 px-4 md:px-0">
+      <div className="flex flex-col w-full h-fit gap-4 xl:gap-6 2xl:gap-6 4xl:gap-8 px-4 md:px-0 xs:px-0 sm:px-0 xl:p-10">
         <div className="relative flex flex-col">
           <form onSubmit={handleLoginform}>
             <div className="rounded-md flex flex-col bg-white h-fit py-4 md:py-4 lg:py-4 xl:py-4  4xl:py-8 px-[3%] gap-2  md:gap-2 lg:gap-4">
@@ -276,7 +274,7 @@ function Loginform() {
           onClose={closeOtpModal}
           size="sm"
           zIndex={9999}
-          withCloseButton={false}
+          withCloseButton={true}
         >
           <OtpModal
             otpNumber={otpNumber}
@@ -284,6 +282,7 @@ function Loginform() {
             handleVerifyOtp={handleVerifyOtp}
             genratedOtp={genratedOtp}
             otpError={otpError}
+            mobile={mobile}
           />
         </Modal>
       )}
@@ -293,6 +292,7 @@ function Loginform() {
           onClose={closeErrorModal}
           size="md"
           zIndex={9999}
+          withCloseButton={true}
         >
           <Errorpanel errorMessages={errorMessages} close={closeErrorModal} />
         </Modal>

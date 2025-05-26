@@ -90,9 +90,11 @@ const Mainnavigation = () => {
                       My Profile
                     </p>
                   </Link>
-                  {/* <Link href="#">
-                                        <p className='text-[12px] 2xl:text-[16px] 3xl:text-[18px] 4xl:text-[20px] text-[#909090] font-semibold'>Change Password</p>
-                                    </Link> */}
+                  <Link href="/invoice">
+                    <p className="text-[12px] 2xl:text-[16px] 3xl:text-[18px] 4xl:text-[20px] text-[#909090] font-semibold">
+                      Invoice
+                    </p>
+                  </Link>
                   <Link href="https://meetowner.in/" target="_blank">
                     <p className="text-[12px] 2xl:text-[16px] 3xl:text-[18px] 4xl:text-[20px] text-[#909090] font-semibold">
                       Go to MeetOwner.in

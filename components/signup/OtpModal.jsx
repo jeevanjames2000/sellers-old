@@ -7,6 +7,7 @@ function OtpModal({
   handleVerifyOtp,
   genratedOtp,
   otpError,
+  mobile,
 }) {
   return (
     <>
@@ -17,7 +18,7 @@ function OtpModal({
           value={otpNumber}
           onChange={updateOtpNumber}
           label="OTP Pin"
-          description="Please enter your pin"
+          description={`Please enter the OTP that was just sent to ${mobile}.`}
           placeholder="*"
           error={otpError}
         />
